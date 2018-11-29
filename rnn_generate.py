@@ -3,7 +3,7 @@ import torch.nn as nn
 import numpy as np
 from torch.nn.utils import clip_grad_norm_
 from utils.utils_rnn import Dictionary, Corpus
-
+import time
 device = 'cuda'
 
 # Hyper-parameters
@@ -16,7 +16,7 @@ seq_length = 20
 learning_rate = 0.0025
 
 corpus = Corpus()
-word_ids = corpus.get_data("data/sanguoyanyi.txt", batch_size)
+word_ids = corpus.get_data("data/news.txt", batch_size)
 vocab_size = len(corpus.dictionary)
 number_batches = word_ids.size(1) // seq_length
 
@@ -100,7 +100,7 @@ def validate(model):
 
 
 ###### Training Loop ####################################################
-
+start_time = time.time()
 try:
     for epoch in range(num_epochs):
         model.train()
@@ -123,11 +123,11 @@ try:
             optimizer.step()
 
             step = (i + 1) // seq_length
-
+            current_time = time.time() - start_time
             # Logging errors after 100th step
             if step % 100 == 0:
-                print ('Epoch [{}/{}], Step[{}/{}], Loss: {:.4f}, Perplexity: {:5.2f}'
-                       .format(epoch+1, num_epochs, step, number_batches, loss.item(), np.exp(loss.item())))
+                print ('Epoch [{}/{}], Step[{}/{}], Loss: {:.4f}, Perplexity: {:5.2f}, Time: {:3.3f}'
+                       .format(epoch+1, num_epochs, step, number_batches, loss.item(), np.exp(loss.item()), current_time))
         # validate(model)
 
 except KeyboardInterrupt:

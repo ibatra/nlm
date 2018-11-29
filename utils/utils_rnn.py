@@ -1,5 +1,6 @@
 import torch
 import os
+import jieba
 
 
 class Dictionary(object):
@@ -29,8 +30,9 @@ class Corpus(object):
             for line in f:
                 if len(line.strip()) == 0:
                     continue
-                # words = line.split() + ['<eos>']
-                words = list(line.strip()) + ['<eos>']
+                words = list(jieba.cut(line.rstrip(), cut_all=False)) + ['<eos>']
+                #words = list(jieba.cut(line.strip(), cut_all=False)) + ['<eos>']
+                 #" ".join(x for x in temp)
                 tokens += len(words)
                 for word in words:
                     self.dictionary.add_word(word)
@@ -42,8 +44,8 @@ class Corpus(object):
             for line in f:
                 if len(line.strip()) == 0:
                     continue
-                # words = line.split() + ['<eos>']
-                words = list(line.strip()) + ['<eos>']
+                words = list(jieba.cut(line.rstrip(), cut_all=False)) + ['<eos>']
+                #words = list(jieba.cut(line.strip(), cut_all=False)) + ['<eos>']
                 for word in words:
                     ids[token] = self.dictionary.word2idx[word]
                     token += 1
